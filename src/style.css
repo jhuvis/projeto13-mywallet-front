@@ -1,0 +1,18 @@
+* {
+  box-sizing: border-box;
+  word-break: break-word;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
+
+.none{
+    display: none;
+  }
+
+  a {
+    text-decoration: none;
+    color: #FFFFFF;
+  }
+  
+
+
