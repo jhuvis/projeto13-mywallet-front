@@ -1,18 +1,18 @@
-import { useState, useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
-import UserContext from './UserContext';
 import "./style.css";
 
 export default function Entrada()
 {
-  const [valor, setValor] = useState("");
-  const [desc, setDesc] = useState("");
+  const [valor, setValor] = useState();
+  const [desc, setDesc] = useState();
 
   const [carrega, setCarregar] = useState("none");
 
-  const [dados, setDados] = useContext(UserContext);
+  let token = localStorage.getItem("token");
+
   const navigate = useNavigate();
 
 
@@ -24,27 +24,27 @@ export default function Entrada()
       setCarregar("");
       
           
-      const requisicao = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login", 
-      {
-     
-      });
+      const requisicao = axios.post("http://localhost:5000/entrada", {
+        valor: Number(valor),
+        desc: desc
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
   
-      requisicao.then((res) => {
+      requisicao.then(() => {
       if(isApiSubscribed) 
       {
-        setDados(res.data);
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("image", res.data.image);
-        localStorage.setItem("porcentagem", 0);
-        navigate("/hoje");
+        setCarregar("none");
+        setValor("");
+        setDesc("");
+        navigate("/registros");
       }
 
     });
   
-      requisicao.catch(() => {
-          alert("algo deu errado");
+      requisicao.catch((e) => {
+          alert("algo deu errado " + e);
           setCarregar("none");
-  
       })
 
       return () => 

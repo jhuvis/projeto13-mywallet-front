@@ -13,6 +13,7 @@ export default function Registros()
     const [nao, setNao] = useState("Não há registros de entrada ou saída");
     const [registros, setRegistros] = useState([]);
     const [none, setNone] = useState("none");
+    const [total, setTotal] = useState(0);
 
     useEffect(() => {
         let isApiSubscribed = true;
@@ -27,13 +28,21 @@ export default function Registros()
           {
             agendarAtualizacaoDeStatus();
             setRegistros(res.data);
+            let soma = 0;
+            for(let i = 0; i < res.data.length; i++)
+            {
+                soma += res.data[i].valor;
+            }
+            setTotal(soma.toFixed(2));
             if(res.data.length === 0)
             {
                 setNao("Não há registros de entrada ou saída");
+                setNone("none")
             }
             else
             {
                 setNao("");
+                setNone("");
             }
           }
         });
@@ -66,19 +75,21 @@ export default function Registros()
         </Topo>
         <Corpo>  
             <p>{nao}</p>
+            <div className={none}>
                 {registros.map((registro, index) => <Registro key={index}>
                 <Dia>{registro.time} {registro.desc}</Dia>
                 <Valor>{registro.valor}</Valor>
                 </Registro>)}
-                <div>Total: {}</div>
+                <Total><div>Saldo</div> <div>{total}</div></Total>
+            </div>
         </Corpo>
         <Bottom>
         <Link to={"/entrada"}><div>
-                <img src={bola}></img>
+                <Bola> + </Bola>
                 <p>Nova entrada</p>
             </div></Link>
             <Link to={"/saida"}><div>
-                <img src={bola}></img>
+                <Bola> - </Bola>
                 <p>Nova saida</p>
             </div></Link>
         </Bottom>
@@ -102,6 +113,19 @@ const Topo = styled.div`
         font-size: 26px;
         color: #FFFFFF;
     }
+`;
+
+const Total = styled.div`
+display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+font-family: 'Raleway';
+font-style: normal;
+font-weight: 600;
+font-size: 19px;
+color: #000000;
+margin-top: 160%;
 `;
 
 const Registro = styled.div`
@@ -149,6 +173,18 @@ const Corpo = styled.div`
     }
 `;
 
+const Bola = styled.p`
+display: flex;
+align-items: center;
+justify-content: center;
+width: 21px;
+height: auto;
+border-width: 2px;
+border-radius: 20px;
+border-style: solid;
+
+`;
+
 const Bottom = styled.div`
     display: flex;
     flex-direction: row;
@@ -160,6 +196,7 @@ const Bottom = styled.div`
         flex-direction: column;
         align-items: flex-start;
         justify-content: space-between;
+         
         padding: 10px;
         background: #A328D6;
         border-radius: 5px;
