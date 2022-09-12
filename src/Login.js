@@ -1,9 +1,8 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
 import track from './MyWallet.png';
-import UserContext from './UserContext';
 import "./style.css";
 
 export default function Login()
@@ -14,7 +13,6 @@ export default function Login()
   const [cadastrar, setCadastrar] = useState("Entrar");
   const [carrega, setCarregar] = useState("none");
 
-  const [dados, setDados] = useContext(UserContext);
   const navigate = useNavigate();
 
 
@@ -36,7 +34,6 @@ export default function Login()
       requisicao.then((res) => {
       if(isApiSubscribed) 
       {
-        setDados(res.data);
         localStorage.setItem("token", res.data);
         setEmail("");
         setSenha("");

@@ -1,15 +1,12 @@
-import {useState, useEffect, useContext} from 'react';
+import {useState, useEffect} from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-import UserContext from './UserContext';
 import sai from './sai.png';
 import bola from './bola.png';
 import { Link } from 'react-router-dom';
 
-
 export default function Registros()
 {
-    const [dados, setDados] = useContext(UserContext);
 
     let token = localStorage.getItem("token");
 
@@ -19,7 +16,6 @@ export default function Registros()
 
     useEffect(() => {
         let isApiSubscribed = true;
-        console.log(token);
         const requisicao = axios.get(
           `http://localhost:5000/registros`, {
             headers: { Authorization: `Bearer ${token}` }
@@ -29,6 +25,7 @@ export default function Registros()
         requisicao.then((res) => {
           if(isApiSubscribed) 
           {
+            agendarAtualizacaoDeStatus();
             setRegistros(res.data);
             if(res.data.length === 0)
             {
@@ -46,6 +43,14 @@ export default function Registros()
         };
       }, [!none]);
 
+      function agendarAtualizacaoDeStatus() {
+        setInterval(atualizarStatus, 5000);
+      }
+      function atualizarStatus() {
+        axios.post("http://localhost:5000/status", {}, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+      };
     
 
     return(
@@ -56,18 +61,16 @@ export default function Registros()
                 <p>Olá, Fulano</p>
             </div>
             <div>
-                <img src={sai}/>
+                <Link to={"/"}><img src={sai}/></Link>
             </div>
         </Topo>
         <Corpo>  
-            {nao}
-            <div>
-                {registros.map((registro, index) => <ul key={index}>
-                {registro.time}
-                {registro.desc}
-                {registro.valor}
-                </ul>)}
-            </div>
+            <p>{nao}</p>
+                {registros.map((registro, index) => <Registro key={index}>
+                <Dia>{registro.time} {registro.desc}</Dia>
+                <Valor>{registro.valor}</Valor>
+                </Registro>)}
+                <div>Total: {}</div>
         </Corpo>
         <Bottom>
         <Link to={"/entrada"}><div>
@@ -101,27 +104,48 @@ const Topo = styled.div`
     }
 `;
 
+const Registro = styled.div`
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin: 10px;
+    
+`;
+
+const Dia = styled.div`
+display: flex;
+flex-direction: row;
+font-family: 'Raleway';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+color: #000000;
+`;
+
+const Valor = styled.div`
+font-family: 'Raleway';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+color: #C70000;
+`;
+
 const Corpo = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
     margin: 20px;
     background: #FFFFFF;
     border-radius: 5px;
     min-height: calc(80vh - 100px);
+    padding: 15px;
 
-font-family: 'Raleway';
-font-style: normal;
-font-weight: 400;
-font-size: 20px;
-
-color: #868686;
-    div{
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: space-around;
+    p{
+        align-items: center;
+        font-family: 'Raleway';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 20px;
+        color: #868686;
     }
 `;
 
