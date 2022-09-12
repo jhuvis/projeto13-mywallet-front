@@ -13,14 +13,38 @@ export default function Registros()
 
     let token = localStorage.getItem("token");
 
-    const config = {
-        headers: { Authorization: `Bearer ${token}` }
-    };
-    
-
     const [nao, setNao] = useState("Não há registros de entrada ou saída");
     const [registros, setRegistros] = useState([]);
     const [none, setNone] = useState("none");
+
+    useEffect(() => {
+        let isApiSubscribed = true;
+        console.log(token);
+        const requisicao = axios.get(
+          `http://localhost:5000/registros`, {
+            headers: { Authorization: `Bearer ${token}` }
+        }
+        );
+    
+        requisicao.then((res) => {
+          if(isApiSubscribed) 
+          {
+            setRegistros(res.data);
+            if(res.data.length === 0)
+            {
+                setNao("Não há registros de entrada ou saída");
+            }
+            else
+            {
+                setNao("");
+            }
+          }
+        });
+        return () => 
+        {
+          isApiSubscribed = false;
+        };
+      }, [!none]);
 
     
 
@@ -35,9 +59,14 @@ export default function Registros()
                 <img src={sai}/>
             </div>
         </Topo>
-        <Corpo>
+        <Corpo>  
+            {nao}
             <div>
-                {nao}
+                {registros.map((registro, index) => <ul key={index}>
+                {registro.time}
+                {registro.desc}
+                {registro.valor}
+                </ul>)}
             </div>
         </Corpo>
         <Bottom>
@@ -88,6 +117,12 @@ font-weight: 400;
 font-size: 20px;
 
 color: #868686;
+    div{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: space-around;
+    }
 `;
 
 const Bottom = styled.div`

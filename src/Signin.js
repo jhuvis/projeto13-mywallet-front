@@ -12,7 +12,6 @@ export default function Signin()
     const [nome, setNome] = useState("");
     const [senhac, setSenhac] = useState("");
 
-    const [cadastrar, setCadastrar] = useState("Cadastrar");
     const [carrega, setCarregar] = useState("none");
 
 function finalizar(event)
@@ -25,13 +24,13 @@ function finalizar(event)
     }
     let isApiSubscribed = true;
     setCarregar("");
-    setCadastrar("");
         
-    const requisicao = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up", 
+    const requisicao = axios.post("http://localhost:5000/sign-up", 
     {
+        name: nome,
 		email: email,
-	    name: nome,
-	    password: senha
+	    password: senha,
+        confirmPassword: senhac,
 	});
 
     requisicao.then(() => 
@@ -50,9 +49,8 @@ function finalizar(event)
 
     });
 
-    requisicao.catch(() => {
-        alert("algo deu errado");
-        setCadastrar("Cadastrar");
+    requisicao.catch((e) => {
+        alert("algo deu errado " + e);
         setCarregar("none");
 
     })
@@ -105,8 +103,7 @@ function finalizar(event)
             required
           /></div>
           <Buttom type="submit" disabled={!carrega}>
-            {cadastrar} 
-            <div className={carrega}></div>
+            Cadastrar
           </Buttom>
         </Form>
         <Link to={"/"}>Já tem uma conta? Entre agora!</Link>

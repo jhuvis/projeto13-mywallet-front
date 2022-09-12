@@ -27,7 +27,7 @@ export default function Login()
       setCadastrar("");
       
           
-      const requisicao = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login", 
+      const requisicao = axios.post("http://localhost:5000/sign-in", 
       {
         email: email,
         password: senha
@@ -37,12 +37,10 @@ export default function Login()
       if(isApiSubscribed) 
       {
         setDados(res.data);
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("image", res.data.image);
-        localStorage.setItem("porcentagem", 0);
+        localStorage.setItem("token", res.data);
         setEmail("");
         setSenha("");
-        navigate("/hoje");
+        navigate("/registros");
       }
 
     });
